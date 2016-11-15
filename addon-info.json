@@ -1,0 +1,12 @@
+{
+  "name" : "alternate-lite",
+  "version" : "dev",
+  "author" : "Luc Hermitte <http://github.com/LucHermitte>",
+  "maintainer" : "Luc Hermitte <http://github.com/LucHermitte>",
+  "repository" : {"type": "git", "url": "git@github.com:LucHermitte/alternate-lite.git"},
+  "dependencies" : {
+      "lh-vim-lib" : {"type" : "git", "url" : "git@github.com:LucHermitte/lh-vim-lib.git"}
+  },
+  "description" : "a.vim simplification",
+  "homepage" : "http://github.com/LucHermitte/alternate-lite"
+}
