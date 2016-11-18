@@ -4,7 +4,7 @@
 " Version:      0.0.1.
 let s:k_version = 001
 " Created:      15th Nov 2016
-" Last Update:  15th Nov 2016
+" Last Update:  18th Nov 2016
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -282,15 +282,16 @@ endfunction
 function! lh#alternate#_decomp_pathname(pathname, ...) abort
   let ft = get(a:, '1', &ft)
   let dir  = fnamemodify(a:pathname, ':h')
+  let file = fnamemodify(a:pathname, ':t')
   let regex = '\v\.('.escape(join(keys(s:extensions(ft)), '|'), '.').')$'
   call s:Verbose('Path decomp regex: %1', regex)
-  let p = match(a:pathname, regex)
+  let p = match(file, regex)
   if p >= 0
-    let file = a:pathname[ : (p-1)]
-    let ext  = a:pathname[(p+1) : ]
+    let ext  = file[(p+1) : ]
+    let file = file[ : (p-1)]
   else
-    let file = fnamemodify(a:pathname, ':t:r')
-    let ext  = fnamemodify(a:pathname, ':e')
+    let ext  = fnamemodify(file, ':e')
+    let file = fnamemodify(file, ':r')
   endif
   call s:Verbose("Decomp for %1 (%2 / %3 + .%4)", a:pathname, dir, file, ext)
   return [dir, file, ext]
