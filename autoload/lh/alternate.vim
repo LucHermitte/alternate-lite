@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.0.1.
-let s:k_version = 001
+" Version:      0.0.2.
+let s:k_version = 002
 " Created:      15th Nov 2016
-" Last Update:  18th Nov 2016
+" Last Update:  08th Dec 2016
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -186,6 +186,10 @@ function! lh#alternate#_find_alternates(...) abort
   let alt_dirs = lh#alternate#_alternate_dirnames(dir, ft)
   " keep only existing directories
   call filter(alt_dirs, 'isdirectory(v:val)')
+  if empty(alt_dirs)
+    " Accept the current dir in case none of the alternates exists
+    let alt_dirs += [dir]
+  endif
 
   let alt_exts = lh#ft#option#get('alternates.extensions.'.ext, ft)
   if lh#option#is_unset(alt_exts)
