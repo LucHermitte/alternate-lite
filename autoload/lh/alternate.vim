@@ -4,7 +4,7 @@
 " Version:      0.0.2.
 let s:k_version = 002
 " Created:      15th Nov 2016
-" Last Update:  08th Dec 2016
+" Last Update:  22nd Feb 2017
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -66,7 +66,7 @@ endfunction
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 " # Plugin initialisation {{{2
-" Function: lh#alternate#register_extension(scope, ext, assoc, ...) {{{3
+" Function: lh#alternate#register_extension(scope, ext, assoc [, uppercase]) {{{3
 function! lh#alternate#register_extension(scope, ext, assoc, ...) abort
   let dict = lh#let#if_undef(a:scope.':alternates.extensions', {})
   if !has_key(dict, a:ext) " Don't use lh#let#* here as some extensions may contain dots...
@@ -229,18 +229,23 @@ endfunction
 
 " ## Initialize options {{{1
 " # Extensions {{{2
-" - C and C++ {{{3
-call lh#alternate#register_extension('g', 'h',   ['c', 'cpp', 'cxx', 'cc', 'txx', 'inc'], 1)
+" - C, C++, cuda, and objective-C {{{3
+call lh#alternate#register_extension('g', 'h',   ['c', 'cpp', 'cxx', 'cc', 'txx', 'inc', 'm', 'mm', 'cu'], 1)
 call lh#alternate#register_extension('g', 'hpp', ['cpp', 'inc'], 1)
 call lh#alternate#register_extension('g', 'hxx', ['cxx', 'inc', 'txx'], 1)
-call lh#alternate#register_extension('g', 'hh',  ['cc', 'inc'], 1)
+call lh#alternate#register_extension('g', 'hh',  ['cc', 'inc', 'mm'], 1)
 call lh#alternate#register_extension('g', 'c',   ['h'], 1)
 call lh#alternate#register_extension('g', 'cpp', ['h', 'hpp'], 1)
 call lh#alternate#register_extension('g', 'cc',  ['h', 'hh'], 1)
 call lh#alternate#register_extension('g', 'cxx', ['h', 'hxx'], 1)
 call lh#alternate#register_extension('g', 'txx', ['h', 'hxx'], 1)
+call lh#alternate#register_extension('g', 'm',   ['h'], 1)
+call lh#alternate#register_extension('g', 'mm',  ['h', 'hh'], 1)
+call lh#alternate#register_extension('g', 'cu',  ['h'], 1)
 call s:register_ft('c', ['h', 'c', 'inc'], 1)
 call s:register_ft('cpp', ['h', 'cpp', 'cxx', 'cc', 'H', 'C', 'txx', 'inc'], 1)
+call s:register_ft('objc', ['h', 'm'], 1)
+call s:register_ft('objcpp', ['h', 'm', 'mm'], 1)
 " - PSL7 {{{3
 call lh#alternate#register_extension('g', 'psl', ['psh'])
 call lh#alternate#register_extension('g', 'psh', ['psl'])
