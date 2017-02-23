@@ -42,10 +42,10 @@ endif
 if exists(':AS') && get(g:, 'loaded_alternateFile', '') !~ '^blocked'
   " TODO: Warning and require user to choose what it whishes to use!
 endif
-command! -nargs=? -bang A  call lh#alternate#_jump("e<bang>",      <f-args>)
-command! -nargs=? -bang AS call lh#alternate#_jump("sp<bang>",     <f-args>)
-command! -nargs=? -bang AV call lh#alternate#_jump("vsp<bang>",    <f-args>)
-command! -nargs=? -bang AT call lh#alternate#_jump("tab sp<bang>", <f-args>)
+command! -nargs=? -bang -complete=customlist,lh#alternate#_complete A  call lh#alternate#_jump("e<bang>",      <f-args>)
+command! -nargs=? -bang -complete=customlist,lh#alternate#_complete AS call lh#alternate#_jump("sp<bang>",     <f-args>)
+command! -nargs=? -bang -complete=customlist,lh#alternate#_complete AV call lh#alternate#_jump("vsp<bang>",    <f-args>)
+command! -nargs=? -bang -complete=customlist,lh#alternate#_complete AT call lh#alternate#_jump("tab sp<bang>", <f-args>)
 command! -nargs=0 -bang AN call lh#alternate#_next("<bang>")
 
 " :IH* and related mappings are not provided as I already provide equivalent in

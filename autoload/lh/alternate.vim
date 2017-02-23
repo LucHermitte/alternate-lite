@@ -173,6 +173,28 @@ function! lh#alternate#_alternate_dirnames(relPathBase, ...) abort
   return res
 endfunction
 
+" Function: lh#alternate#_find_extentions(filename, ft) {{{3
+" Get extensions associated to {ext} and those associated to {ft}
+" Then filter extensions associated to {ext} that are valid for the given {ft}
+" This filtering is important as a foo.h file could be associated to a foo.cpp
+" and a foo.m, except the later doesn't make any sense in C nor in C++.
+function! lh#alternate#_find_extentions(ext, ft) abort
+  let alt_exts_for_ext = lh#ft#option#get('alternates.extensions.'.a:ext, a:ft)
+  let alt_exts_for_ft  = lh#option#get('alternates.fts.'.a:ft)
+
+  if     lh#option#is_set(alt_exts_for_ext) && lh#option#is_set(alt_exts_for_ft)
+    return lh#list#intersect(alt_exts_for_ext, alt_exts_for_ft)
+  elseif lh#option#is_set(alt_exts_for_ext) " && unset(4ft)
+    call s:Verbose("No known extensions associated to %1 filetype", a:ft)
+    return alt_exts_for_ext
+  elseif lh#option#is_set(alt_exts_for_ft) " && unset(4ext)
+    call s:Verbose("No known extensions associated to .%1", a:ext)
+    return alt_exts_for_ft
+  else
+    return []
+  endif
+endfunction
+
 " Function: lh#alternate#_find_alternates([{'filename': ..., 'ft': ...}]) {{{3
 function! lh#alternate#_find_alternates(...) abort
   if a:0 > 0
@@ -191,25 +213,8 @@ function! lh#alternate#_find_alternates(...) abort
     let alt_dirs += [dir]
   endif
 
-  " Get extensions associated to {ext} and those associated to {ft}
-  " Then filter extensions associated to {ext} that are valid for the given
-  " {ft}
-  " This filtering is important as a foo.h file could be associated to a
-  " foo.cpp and a foo.m, except the later doesn't make any sense in C nor in
-  " C++.
-
-  let alt_exts_for_ext = lh#ft#option#get('alternates.extensions.'.ext, ft)
-  let alt_exts_for_ft  = lh#option#get('alternates.fts.'.ft)
-
-  if     lh#option#is_set(alt_exts_for_ext) && lh#option#is_set(alt_exts_for_ft)
-    let alt_exts = lh#list#intersect(alt_exts_for_ext, alt_exts_for_ft)
-  elseif lh#option#is_set(alt_exts_for_ext) " && unset(4ft)
-    call s:Verbose("No known extensions associated to %1 filetype", ft)
-    let alt_exts = alt_exts_for_ext
-  elseif lh#option#is_set(alt_exts_for_ft) " && unset(4ext)
-    call s:Verbose("No known extensions associated to .%1", ext)
-    let alt_exts = alt_exts_for_ft
-  else
+  let alt_exts = lh#alternate#_find_extentions(ext, ft)
+  if empty(alt_exts)
     let msg = lh#fmt#printf("No known extensions associated to .%1, nor to %2 filetype either", ext, ft)
     call s:Verbose(msg." => abort")
     return lh#option#unset(msg)
@@ -305,6 +310,17 @@ function! lh#alternate#_next(bang) abort
       call lh#buffer#jump(files.existing[nxt_idx], "e".a:bang)
     endif
   endif
+endfunction
+
+" Function: lh#alternate#_complete(ArgLead, CmdLine, CursorPos) {{{3
+function! lh#alternate#_complete(ArgLead, CmdLine, CursorPos) abort
+  let ft       = &ft
+  let filename = expand('%')
+  let [dir, file, ext] = lh#alternate#_decomp_pathname(filename)
+  let alt_exts = lh#alternate#_find_extentions(ext, ft)
+
+  call filter(alt_exts, 'v:val =~ a:ArgLead')
+  return alt_exts
 endfunction
 
 " ## Initialize options {{{1
