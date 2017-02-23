@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.0.2.
-let s:k_version = 002
+" Version:      0.1.0.
+let s:k_version = 010
 " Created:      15th Nov 2016
-" Last Update:  22nd Feb 2017
+" Last Update:  23rd Feb 2017
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -191,19 +191,31 @@ function! lh#alternate#_find_alternates(...) abort
     let alt_dirs += [dir]
   endif
 
-  let alt_exts = lh#ft#option#get('alternates.extensions.'.ext, ft)
-  if lh#option#is_unset(alt_exts)
+  " Get extensions associated to {ext} and those associated to {ft}
+  " Then filter extensions associated to {ext} that are valid for the given
+  " {ft}
+  " This filtering is important as a foo.h file could be associated to a
+  " foo.cpp and a foo.m, except the later doesn't make any sense in C nor in
+  " C++.
+
+  let alt_exts_for_ext = lh#ft#option#get('alternates.extensions.'.ext, ft)
+  let alt_exts_for_ft  = lh#option#get('alternates.fts.'.ft)
+
+  if     lh#option#is_set(alt_exts_for_ext) && lh#option#is_set(alt_exts_for_ft)
+    let alt_exts = lh#list#intersect(alt_exts_for_ext, alt_exts_for_ft)
+  elseif lh#option#is_set(alt_exts_for_ext) " && unset(4ft)
+    call s:Verbose("No known extensions associated to %1 filetype", ft)
+    let alt_exts = alt_exts_for_ext
+  elseif lh#option#is_set(alt_exts_for_ft) " && unset(4ext)
     call s:Verbose("No known extensions associated to .%1", ext)
-    unlet alt_exts
-    let alt_exts = lh#option#get('alternates.fts.'.ft)
-    if lh#option#is_unset(alt_exts)
-      call s:Verbose("No known extensions associated to %1 filetype either => abort", ft)
-      return []
+    let alt_exts = alt_exts_for_ft
+  else
+    let msg = lh#fmt#printf("No known extensions associated to .%1, nor to %2 filetype either", ext, ft)
+    call s:Verbose(msg." => abort")
+    return lh#option#unset(msg)
     endif
-    " Remove the current extension
-    let alt_exts = filter(copy(alt_exts), 'v:val != ext')
-  endif
-  call s:Verbose("Extension associated to %1 -> %2", filename, alt_exts)
+
+  call s:Verbose("Extensions associated to %1 -> %2", filename, alt_exts)
 
   let alt_files_ext = map(copy(alt_exts), 'file.".".v:val')
 
@@ -234,16 +246,18 @@ call lh#alternate#register_extension('g', 'h',   ['c', 'cpp', 'cxx', 'cc', 'txx'
 call lh#alternate#register_extension('g', 'hpp', ['cpp', 'inc'], 1)
 call lh#alternate#register_extension('g', 'hxx', ['cxx', 'inc', 'txx'], 1)
 call lh#alternate#register_extension('g', 'hh',  ['cc', 'inc', 'mm'], 1)
-call lh#alternate#register_extension('g', 'c',   ['h'], 1)
-call lh#alternate#register_extension('g', 'cpp', ['h', 'hpp'], 1)
-call lh#alternate#register_extension('g', 'cc',  ['h', 'hh'], 1)
-call lh#alternate#register_extension('g', 'cxx', ['h', 'hxx'], 1)
-call lh#alternate#register_extension('g', 'txx', ['h', 'hxx'], 1)
+call lh#alternate#register_extension('g', 'c',   ['h', 'inc'], 1)
+call lh#alternate#register_extension('g', 'cpp', ['h', 'hpp', 'inc'], 1)
+call lh#alternate#register_extension('g', 'cc',  ['h', 'hh', 'inc'], 1)
+call lh#alternate#register_extension('g', 'cxx', ['h', 'hxx', 'inc'], 1)
+call lh#alternate#register_extension('g', 'txx', ['h', 'hxx', 'inc'], 1)
+call lh#alternate#register_extension('g', 'inc', ['h', 'hpp', 'hh','hxx', 'c', 'cpp', 'cxx', 'txx'], 1)
 call lh#alternate#register_extension('g', 'm',   ['h'], 1)
 call lh#alternate#register_extension('g', 'mm',  ['h', 'hh'], 1)
 call lh#alternate#register_extension('g', 'cu',  ['h'], 1)
 call s:register_ft('c', ['h', 'c', 'inc'], 1)
-call s:register_ft('cpp', ['h', 'cpp', 'cxx', 'cc', 'H', 'C', 'txx', 'inc'], 1)
+call s:register_ft('cpp', ['hpp', 'h', 'cpp', 'cxx', 'cc', 'H', 'C', 'txx', 'inc'], 1)
+call s:register_ft('cuda', ['h', 'cu'])
 call s:register_ft('objc', ['h', 'm'], 1)
 call s:register_ft('objcpp', ['h', 'm', 'mm'], 1)
 " - PSL7 {{{3
@@ -274,12 +288,12 @@ call lh#let#to('g:alternates.searchpath', 'sfr:../source,sfr:../src,sfr:../inclu
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
-function! s:extensions(...) abort " {{{3
+function! s:extensions(...) abort " {{{2
   let ft = get(a:, '1', &ft)
   return lh#ft#option#get_all('alternates.extensions', ft)
 endfunction
 
-" Function: lh#alternate#_decomp_pathname(pathname[, ft]) {{{3
+" Function: lh#alternate#_decomp_pathname(pathname[, ft]) {{{2
 " Replaces a.vim DetermineExtension()
 " Purpose  : Determines the extension of a filename based on the register
 "            alternate extension. This allow extension which contain dots to
