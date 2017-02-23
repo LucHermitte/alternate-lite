@@ -213,7 +213,7 @@ function! lh#alternate#_find_alternates(...) abort
     let msg = lh#fmt#printf("No known extensions associated to .%1, nor to %2 filetype either", ext, ft)
     call s:Verbose(msg." => abort")
     return lh#option#unset(msg)
-    endif
+  endif
 
   call s:Verbose("Extensions associated to %1 -> %2", filename, alt_exts)
 
@@ -237,6 +237,74 @@ endfunction
 function! lh#alternate#_find_existing_alternates(...) abort
   let res = call('lh#alternate#_find_alternates', a:000)
   return res.existing
+endfunction
+
+" # Commands related {{{2
+" Function: lh#alternate#_jump(cmd, ...) {{{3
+" @param[in] {cmd} command opening action
+" @param[in] {a:1} new extension
+function! lh#alternate#_jump(cmd, ...) abort
+  " 1- Find all matching files
+  let files = lh#alternate#_find_alternates() " on current file
+  if lh#option#is_unset(files)
+    call lh#common#warning_msg('Alternate: '.files.__msg)
+    return
+  endif
+
+  " 2- Find the file to open/jump-to
+  if a:0 > 0
+    let extention = a:1
+    let matching = filter(files.existing+files.theorical, 'v:val =~ extention."$"')
+    if empty(matching)
+      throw "Cannot find an alternate for the current file in `.".extention."`"
+    else
+      call lh#assert#equal(1, len(matching), "There should be only one valid file ending in `.".extention."`")
+      let selected_file = matching[0]
+    endif
+  else
+    if len(files.existing) == 1
+      let selected_file = files.existing[0]
+    else
+      if !empty(files.existing)
+        let lFiles = files.existing
+      else
+        let lFiles = files.theorical
+      endif
+      let selected_file = lh#path#select_one(lFiles, "What should be the name of the new file?")
+    endif
+  endif
+
+  " 3- Jump to that file
+  if !empty(selected_file)
+    let all_files = [expand('%')]+files.existing+files.theorical
+    call lh#let#to('b:alternates.__all_files', all_files)
+    call lh#buffer#jump(selected_file, a:cmd)
+    " We may set the option twice, it's not important.
+    call lh#let#to('b:alternates.__all_files', all_files)
+  endif
+endfunction
+
+" Function: lh#alternate#_next(bang) {{{3
+function! lh#alternate#_next(bang) abort
+  if exists('b:alternates.__all_files')
+    let all_files = b:alternates.__all_files
+    let files = {
+          \ 'existing': filter(copy(all_files), 'lh#path#exists(v:val)')
+          \,'theorical': filter(copy(all_files), '! lh#path#exists(v:val)')
+          \ }
+  else
+    let files = lh#alternate#_find_alternates()
+    let all_files = [expand('%')]+files.existing+files.theorical
+  endif
+  " TODO: handle possible change of directories...
+  let crt_idx = index(files.existing, expand('%'))
+  if crt_idx >= 0
+    let nxt_idx = (crt_idx + 1) % len(files.existing)
+    if nxt_idx != crt_idx
+      call lh#let#to('b:alternates.__all_files', all_files)
+      call lh#buffer#jump(files.existing[nxt_idx], "e".a:bang)
+    endif
+  endif
 endfunction
 
 " ## Initialize options {{{1

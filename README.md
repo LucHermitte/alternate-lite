@@ -1,7 +1,7 @@
 # alternate-lite  [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
 
 ## Features
-This plugin is meant to be a simplicification of Michael Sharpe's alternate.vim plugin.
+This plugin is meant to be a simplification of Michael Sharpe's alternate.vim plugin.
 
 The design decisions that distinguishes _alternate-lite_ from _alternate_ are the
 following:
@@ -9,9 +9,36 @@ following:
  * Support for project/buffer specific settings
  * Use dictionaries to set variables
  * Lazy definition of functions through autoload plugin
+ * `:IH` commands and related mapping are already defined in my
+   [http://github.com/LucHermitte/SearchInRuntime](SearchInRuntime plugin).
 
 My main use case for this plugin is to build things like
 [lh-cpp's `:GOTOIMPL` command](http://github.com/LucHermitte/lh-cpp).
+
+## Commands
+
+alternate-lite implements slightly differently all `:A` commands provided by
+original `a.vim` plugin.
+
+All these commands first deduce an alternate file for the current one. The
+priority is given to files that exist. Then, they try to jump to the window
+where this alternate file is displayed, if the file wasn't displayed, it'll be
+opened:
+
+ * In the current window with `:A,
+ * In a horizontally split opened window with `:AS`,
+ * In a vertically split opened window with `:AV`,
+ * In a new tab with `:AT`.
+
+In case several alternate files are found, we'll be asked to choose which one
+we wish to open or to jump-to.
+
+The previous commands also take an optional parameter: the extension we wish
+precisally to use to deduce the alternate file.
+
+There is also the `:AN` command that permits to cycle through the buffers
+associated to the current buffer. If possible, this command will search for a
+window where the next buffer is already displayed.
 
 ## Options
 
