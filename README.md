@@ -9,8 +9,8 @@ following:
  * Support for project/buffer specific settings
  * Use dictionaries to set variables
  * Lazy definition of functions through autoload plugin
- * `:IH` commands and related mapping are already defined in my
-   [http://github.com/LucHermitte/SearchInRuntime](SearchInRuntime plugin).
+ * `:IH` commands and related mappings are already defined in my
+   [SearchInRuntime plugin](http://github.com/LucHermitte/SearchInRuntime).
 
 My main use case for this plugin is to build things like
 [lh-cpp's `:GOTOIMPL` command](http://github.com/LucHermitte/lh-cpp).
@@ -25,7 +25,7 @@ priority is given to files that exist. Then, they try to jump to the window
 where this alternate file is displayed, if the file wasn't displayed, it'll be
 opened:
 
- * In the current window with `:A,
+ * In the current window with `:A`,
  * In a horizontally split opened window with `:AS`,
  * In a vertically split opened window with `:AV`,
  * In a new tab with `:AT`.
