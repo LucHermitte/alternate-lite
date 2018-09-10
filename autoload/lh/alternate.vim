@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.1.0.
-let s:k_version = 010
+" Version:      0.1.1.
+let s:k_version = 011
 " Created:      15th Nov 2016
-" Last Update:  23rd Feb 2017
+" Last Update:  10th Sep 2018
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -67,11 +67,16 @@ endfunction
 " ## Internal functions {{{1
 " # Plugin initialisation {{{2
 " Function: lh#alternate#register_extension(scope, ext, assoc [, uppercase]) {{{3
+"
+" Note: Even if the end-user wishes to override the default associations in
+" her/his .vimrc, we don't need to check the association doesn't already
+" exists.  Indeed, to call lh#alternate#register_extension(), the plugin will
+" first be loaded, and thus the default settings will be defined, and the
+" end-user can then override them.
 function! lh#alternate#register_extension(scope, ext, assoc, ...) abort
   let dict = lh#let#if_undef(a:scope.':alternates.extensions', {})
-  if !has_key(dict, a:ext) " Don't use lh#let#* here as some extensions may contain dots...
-    let dict[a:ext] = a:assoc
-  endif
+  " Don't use lh#let#* here as some extensions may contain dots... See ASP
+  let dict[a:ext] = a:assoc
   if get(a:, '1', 0) " uppercase
     call lh#alternate#register_extension(a:scope, toupper(a:ext), map(copy(a:assoc), 'toupper(v:val)'))
   endif
