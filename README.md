@@ -133,7 +133,7 @@ tool to define correctly
 [lh-cpp's `:GOTOIMPL` command](http://github.com/LucHermitte/lh-cpp).
 
 ## Installation
-  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib)
+  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib) v4.6.3
 
   * With [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager), install alternate-lite. This is the preferred method because of the various dependencies.
 ```vim
