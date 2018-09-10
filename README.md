@@ -1,4 +1,4 @@
-# alternate-lite  [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
+# alternate-lite  [![Last release](https://img.shields.io/github/tag/LucHermitte/alternate-lite.svg)](https://github.com/LucHermitte/alternate-lite/releases) [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
 
 ## Features
 This plugin is meant to be a simplification of Michael Sharpe's alternate.vim plugin.
