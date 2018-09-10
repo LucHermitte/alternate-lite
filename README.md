@@ -49,6 +49,8 @@ See [`lh#ft#option#get()`](https://github.com/LucHermitte/lh-dev#filetype-polymo
 You can obtain the latest status with a `:echo g:alternates.extensions`.
 
 ### Extension map
+
+#### Globally change the extension mappings
 Let's say you want to register `.tpp` as a new extension for files where C++
 template functions would be defined, you'll need to execute (in your `.vimrc`
 for instance):
@@ -60,13 +62,24 @@ call lh#alternate#register_extension('g', 'hpp', g:alternates.extensions.hpp + [
 call lh#alternate#register_extension('g', 'tpp', ['h', 'hpp'])
 
 " The {filetype -> extensions} map
-let g:alternates.ft.cpp += ['tpp']
+let g:alternates.fts.cpp += ['tpp']
 ```
 
-This says that this new extension may be used in all your projects. If you
-prefer to register it only in one project, with
-[lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib) project feature, you
-could define instead:
+This says that this new extension may be used in all your projects.
+
+The last line is important and required with filetypes that share some
+extensions like C, C++, ObjectiveC, and so on. Other filetypes like lex, yacc,
+OCaml, ASP... aren't concerned.
+
+If you see that  `g:alternates.fts` exists for the filetype to which you wish
+to register a new extension, then, don't forget to extend the associated list
+with the new extension.
+
+#### Change the extension mappings for a given project only
+If you prefer to register it only in one project, with
+[lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib)
+[project feature](https://github.com/LucHermitte/lh-vim-lib/blob/master/doc/Project.md),
+you could define instead:
 
 ```vim
 " The actual {extension -> extensions} map
@@ -75,8 +88,10 @@ call lh#alternate#register_extension('p', 'hpp', g:alternates.extensions.hpp + [
 call lh#alternate#register_extension('p', 'tpp', ['h', 'hpp'])
 
 " The {filetype -> extensions} map
-let g:alternates.ft.cpp += ['tpp']
+LetTo p:alternates.fts.cpp = g:alternates.fts.cpp + ['tpp']
 ```
+
+In order to override the default values, just don't reuse them.
 
 ### Directory selection
 The option `(bpg):[{ft}_]alternates.searchpath` can contain a comma separated
