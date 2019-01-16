@@ -2,10 +2,10 @@
 " File:         plugin/alternate-lite.vim                         {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
 "		<URL:http://github.com/LucHermitte/alternate-lite>
-" Version:      0.1.0
-let s:k_version = '0.1.0'
+" Version:      0.1.2
+let s:k_version = '0.1.2'
 " Created:      23rd Feb 2017
-" Last Update:  23rd Feb 2017
+" Last Update:  16th Jan 2019
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -22,14 +22,16 @@ let s:k_version = '0.1.0'
 "=============================================================================
 
 " Avoid global reinclusion {{{1
+let s:cpo_save=&cpo
+set cpo&vim
+
 if &cp || (exists("g:loaded_alternate_lite")
       \ && (g:loaded_alternate_lite >= s:k_version)
       \ && !exists('g:force_reload_alternate_lite'))
+  let &cpo=s:cpo_save
   finish
 endif
 let g:loaded_alternate_lite = s:k_version
-let s:cpo_save=&cpo
-set cpo&vim
 
 " Avoid global reinclusion }}}1
 "------------------------------------------------------------------------
