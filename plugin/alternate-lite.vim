@@ -5,7 +5,7 @@
 " Version:      0.1.2
 let s:k_version = '0.1.2'
 " Created:      23rd Feb 2017
-" Last Update:  16th Jan 2019
+" Last Update:  11th Mar 2019
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -21,7 +21,7 @@ let s:k_version = '0.1.2'
 " }}}1
 "=============================================================================
 
-" Avoid global reinclusion {{{1
+" ## Avoid global reinclusion {{{1
 let s:cpo_save=&cpo
 set cpo&vim
 
@@ -35,7 +35,7 @@ let g:loaded_alternate_lite = s:k_version
 
 " Avoid global reinclusion }}}1
 "------------------------------------------------------------------------
-" Functions (always loaded) {{{1
+" ## Functions (always loaded) {{{1
 function! s:warn_a_vim_is_installed()
   echomsg "WARNING:"
   echomsg "  It seems you have installed a.vim plugin *and* alternate-lite plugin (likelly through lh-cpp)."
@@ -48,7 +48,7 @@ function! s:warn_a_vim_is_installed()
 endfunction
 
 "------------------------------------------------------------------------
-" Commands and Mappings {{{1
+" ## Commands and Mappings {{{1
 if exists(':AS') && get(g:, 'loaded_alternateFile', '') !~ '^blocked'
   call s:warn_a_vim_is_installed()
 endif
@@ -63,7 +63,12 @@ command! -nargs=0 -bang AN call lh#alternate#_next("<bang>")
 " SearchInRuntime.
 
 "------------------------------------------------------------------------
-" Prevent a.vim from being loaded ? {{{1
+" ## Initialize option {{{1
+" # Paths {{{2
+call lh#let#if_undef('g:alternates.searchpath', 'sfr:../source,sfr:../src,sfr:../include,sfr:../inc')
+
+"------------------------------------------------------------------------
+" ## Prevent a.vim from being loaded ? {{{1
 "
 " Note that you can load alternate-lite and THEN a.vim if you override
 " g:lh#alternate.block_original_a_vim to 0 in your .vimrc.

@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.1.1.
-let s:k_version = 011
+" Version:      0.1.2.
+let s:k_version = 012
 " Created:      15th Nov 2016
-" Last Update:  10th Sep 2018
+" Last Update:  11th Mar 2019
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -372,9 +372,6 @@ call lh#alternate#register_extension('g', 'mli',     ['ml'])
 call lh#alternate#register_extension('g', 'aspx.cs', [ 'aspx'])
 call lh#alternate#register_extension('g', 'aspx.vb', [ 'aspx'])
 call lh#alternate#register_extension('g', 'aspx',    [ 'aspx.cs', 'aspx.vb'])
-
-" # Paths {{{2
-call lh#let#to('g:alternates.searchpath', 'sfr:../source,sfr:../src,sfr:../include,sfr:../inc')
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1

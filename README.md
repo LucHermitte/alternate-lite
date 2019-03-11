@@ -63,6 +63,7 @@ call lh#alternate#register_extension('g', 'tpp', ['h', 'hpp'])
 
 " The {filetype -> extensions} map
 let g:alternates.fts.cpp += ['tpp']
+" Note: this last command can only be done after a call to any lh#alternate#* function
 ```
 
 This says that this new extension may be used in all your projects.
@@ -89,6 +90,7 @@ call lh#alternate#register_extension('p', 'tpp', ['h', 'hpp'])
 
 " The {filetype -> extensions} map
 LetTo p:alternates.fts.cpp = g:alternates.fts.cpp + ['tpp']
+" Note: this last command can only be done after a call to any lh#alternate#* function
 ```
 
 In order to override the default values, just don't reuse them.
