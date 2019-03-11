@@ -277,10 +277,11 @@ function! lh#alternate#_jump(cmd, ...) abort
     else
       if !empty(files.existing)
         let lFiles = files.existing
+        let selected_file = lh#path#select_one(lFiles, "Select existing file to switch to:")
       else
         let lFiles = files.theorical
+        let selected_file = lh#path#select_one(lFiles, "What should be the name of the new file?")
       endif
-      let selected_file = lh#path#select_one(lFiles, "What should be the name of the new file?")
     endif
   endif
 
