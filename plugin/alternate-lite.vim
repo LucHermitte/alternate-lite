@@ -2,10 +2,10 @@
 " File:         plugin/alternate-lite.vim                         {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
 "		<URL:http://github.com/LucHermitte/alternate-lite>
-" Version:      0.1.2
-let s:k_version = '0.1.2'
+" Version:      0.1.3
+let s:k_version = '0.1.3'
 " Created:      23rd Feb 2017
-" Last Update:  11th Mar 2019
+" Last Update:  27th May 2019
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin

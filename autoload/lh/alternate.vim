@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.1.2.
-let s:k_version = 012
+" Version:      0.1.3
+let s:k_version = 013
 " Created:      15th Nov 2016
-" Last Update:  11th Mar 2019
+" Last Update:  27th May 2019
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -143,6 +143,9 @@ function! lh#alternate#_expand_alternate_path(pathSpec, sfPath) abort
     let patend = match(re, sep, 1)
     let pat = strpart(re, 1, patend - 1)
     let subend = match(re, sep, patend + 1)
+    if  subend < 0
+      let subend = len(re)
+    endif
     let sub = strpart(re, patend+1, subend - patend - 1)
     let flag = strpart(re, strlen(re) - 2)
     if (flag == sep)
