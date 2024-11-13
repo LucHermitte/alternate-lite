@@ -57,8 +57,8 @@ for instance):
 
 ```vim
 " The actual {extension -> extensions} map
-call lh#alternate#register_extension('g', 'h'  , g:alternates.extensions.h + ['tpp'])
-call lh#alternate#register_extension('g', 'hpp', g:alternates.extensions.hpp + ['tpp'])
+call lh#alternate#register_extra_extension('g', 'h'  , ['tpp'])
+call lh#alternate#register_extra_extension('g', 'hpp', ['tpp'])
 call lh#alternate#register_extension('g', 'tpp', ['h', 'hpp'])
 
 " The {filetype -> extensions} map
@@ -73,8 +73,12 @@ extensions like C, C++, ObjectiveC, and so on. Other filetypes like lex, yacc,
 OCaml, ASP... aren't concerned.
 
 If you see that  `g:alternates.fts` exists for the filetype to which you wish
-to register a new extension, then, don't forget to extend the associated list
-with the new extension.
+to register a new extension, then:
+
+- override the associated list with the new extensions thank to
+  `lh#alternate#register_extension`
+- extend the associated list with the new extensions thank to
+  `lh#alternate#register_extra_extension`
 
 #### Change the extension mappings for a given project only
 If you prefer to register it only in one project, with
