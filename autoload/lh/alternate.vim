@@ -156,17 +156,8 @@ function! lh#alternate#_expand_alternate_path(pathSpec, sfPath) abort
   elseif (prfx == "reg:")
     let re = strpart(a:pathSpec, 4)
     let sep = strpart(re, 0, 1)
-    let patend = match(re, sep, 1)
-    let pat = strpart(re, 1, patend - 1)
-    let subend = match(re, sep, patend + 1)
-    if  subend < 0
-      let subend = len(re)
-    endif
-    let sub = strpart(re, patend+1, subend - patend - 1)
-    let flag = strpart(re, strlen(re) - 2)
-    if (flag == sep)
-      let flag = ''
-    endif
+    let [pat, sub; tail] = split(re, sep)
+    let flag = len(tail)> 0 ? tail[0] : ''
     if a:sfPath =~ pat
       let path = substitute(a:sfPath, pat, sub, flag)
     else
