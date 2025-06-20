@@ -1,10 +1,10 @@
 "=============================================================================
 " File:         addons/alternate-lite/autoload/lh/alternate.vim   {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
-" Version:      0.2.0
-let s:k_version = 020
+" Version:      0.2.1
+let s:k_version = 021
 " Created:      15th Nov 2016
-" Last Update:  13th Nov 2024
+" Last Update:  20th Jun 2025
 "------------------------------------------------------------------------
 " Description:
 "    Simplification of Michael Sharpe's alternate.vim plugin
@@ -282,25 +282,23 @@ function! lh#alternate#_jump(cmd, ...) abort
 
   " 2- Find the file to open/jump-to
   if a:0 > 0
-    let extention = a:1
-    let matching = filter(files.existing+files.theorical, 'v:val =~ extention."$"')
-    if empty(matching)
-      throw "Cannot find an alternate for the current file in `.".extention."`"
-    else
-      call lh#assert#equal(1, len(matching), "There should be only one valid file ending in `.".extention."`")
-      let selected_file = matching[0]
+    let extension = a:1
+    call filter(files.existing,  'v:val =~ extension."$"')
+    call filter(files.theorical, 'v:val =~ extension."$"')
+    if empty(files.existing) && empty(files.theorical)
+      throw "Cannot find an alternate for the current file in `.".extension."`"
     endif
+  endif
+
+  if len(files.existing) == 1
+    let selected_file = files.existing[0]
   else
-    if len(files.existing) == 1
-      let selected_file = files.existing[0]
+    if !empty(files.existing)
+      let lFiles = files.existing
+      let selected_file = lh#path#select_one(lFiles, "Select existing file to switch to:")
     else
-      if !empty(files.existing)
-        let lFiles = files.existing
-        let selected_file = lh#path#select_one(lFiles, "Select existing file to switch to:")
-      else
-        let lFiles = files.theorical
-        let selected_file = lh#path#select_one(lFiles, "What should be the name of the new file?")
-      endif
+      let lFiles = files.theorical
+      let selected_file = lh#path#select_one(lFiles, "What should be the name of the new file?")
     endif
   endif
 
